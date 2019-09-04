@@ -22,14 +22,22 @@ def parse_titles(use_public_quota=True):
             articut = Articut(username=os.environ["username"], apikey=os.environ["apikey"])
         url_title = get_article_titles()
         # Select articles having relatively higher hits
-        _df = pd.DataFrame([v for v in url_title.values()])
+        articles = []
+        for k, v in url_title.items():
+            article = v
+            article.update({"url": k})
+            articles.append(article)
+        _df = pd.DataFrame(articles)
         # The data get public on 2019-07-04
         _df["posted_ago"] = _df["posted_at"].apply(lambda x: (datetime(2019, 7, 4) - datetime.fromisoformat(x)).total_seconds()/(24*60*60))
         _df["hits_per_day"] = _df["hits"]/_df["posted_ago"]
+        _df = _df.sort_values("hits_per_day", ascending=False)
+        # Dropout articles with the same title
+        _df.loc[~_df["title"].duplicated()]
         title_locations = {}
         # Hits per day > 5
-        for title in _df.loc[_df["hits_per_day"] > 5, "title"]:
-            results = articut.parse(inputSTR=title, openDataPlaceAccessBOOL=True)
+        for row in _df.loc[_df["hits_per_day"] > 5].itertuples(index=False):
+            results = articut.parse(inputSTR=row.title, openDataPlaceAccessBOOL=True)
             locations = []
             try:
                 for p in results["result_pos"]:
@@ -43,8 +51,8 @@ def parse_titles(use_public_quota=True):
                         found_location = match.group(1)
                         if found_location not in locations:
                             locations.append(found_location)
-                title_locations[title] = locations
-                print(title, locations)
+                title_locations[row.url] = {"title": row.title, "locations": locations}
+                print(row.title, locations)
             except KeyError:
                 # Running out of quota
                 print("Hit quota limit before finishing the task!")
