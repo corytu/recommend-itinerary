@@ -7,6 +7,7 @@ import re
 from datetime import datetime
 
 import pandas as pd
+# Articut API forked from https://github.com/Droidtown/ArticutAPI
 from ArticutAPI.ArticutAPI import Articut
 
 from get_article_titles import get_article_titles
