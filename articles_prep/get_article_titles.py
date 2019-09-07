@@ -13,12 +13,12 @@ def get_article_titles():
             url_title_dic = json.load(f)
     else:
         db = firestore.Client()
-        article_ref = db.collection("articles_182k")
+        db_collection = db.collection("articles_182k")
         url_title_dic = {}
         # Paginating data with query cursors: https://cloud.google.com/firestore/docs/query-data/query-cursors
         # Also see https://stackoverflow.com/a/57526797/6666231
         for site_category in ["國內旅遊", "國外旅遊"]:
-            query = article_ref.where("site_category", "==", site_category).order_by("url").limit(10000)
+            query = db_collection.where("site_category", "==", site_category).order_by("url").limit(10000)
             while True:
                 old_url_title_dic_len = len(url_title_dic)
                 docs = query.stream()
@@ -33,7 +33,7 @@ def get_article_titles():
                     print("Get article: {}".format(doc_dict["title"]))
                 new_url_title_dic_len = len(url_title_dic)
                 if new_url_title_dic_len > old_url_title_dic_len:
-                    query = article_ref.where("site_category", "==", site_category).order_by("url").start_after({"url": last_url}).limit(10000)
+                    query = db_collection.where("site_category", "==", site_category).order_by("url").start_after({"url": last_url}).limit(10000)
                 else:
                     break
         with open("url_title.json", "w") as f:
