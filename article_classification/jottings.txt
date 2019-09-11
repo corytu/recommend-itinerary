@@ -1,0 +1,8 @@
+tfidf 數值 - X
+vectors of keywords - X (-> PCA降維 -> X1, X2, X3 (3D))
+self defined category - Y
+
+- train 跟 test 要合一起先做 word2vec 嗎？ -> 要，要同一個 vector space
+- 那新進文章怎麼辦（word2vec 是能分開做的嗎）？ -> 要 regular 去 update 整個 corpus 的 vector space
+- 拿 top keywords 做 word2vec，word2vec 似乎學不到相近詞的關聯性（不是有意義文本）？ -> 先這樣了...
+- word2vec 250 維，先降維再做分類器會比較好嗎？ -> 如果是 random forest 等不需要 interpretability，似乎不需要，而且不是 sparse data
