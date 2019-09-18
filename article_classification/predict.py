@@ -2,6 +2,7 @@
 # coding: utf-8
 
 import pickle
+import re
 import hashlib
 
 import pandas as pd
@@ -68,6 +69,15 @@ def push_predictions(df_predicted):
     original_collection = db.collection("articles_182k")
     new_collection = db.collection("articles_for_app")
     for row in df_predicted.itertuples(index=False):
+        # Seek top 12 cities
+        for location in row.segmented_locations:
+            found_city = re.match(r"(台中|宜蘭|台北|台南|桃園|新竹|高雄|新北|苗栗|嘉義|南投|花蓮).+", location)
+            if found_city:
+                found_city_name = found_city.group(1)
+                if found_city_name not in row.segmented_locations:
+                    row.segmented_locations.append(found_city_name)
+                    print(f"{found_city_name} is appended to segmented locations")
+        # Get needed raw article info
         query = original_collection.where("url", "==", row.url)
         docs = query.stream()
         for doc in docs:
@@ -75,6 +85,7 @@ def push_predictions(df_predicted):
             image_links = doc_dict.get("image_links")
             hits = doc_dict.get("hits")
             author = doc_dict.get("author")
+        # Set data
         url_hash = hashlib.sha256(row.url.encode()).hexdigest()
         app_doc = new_collection.document(url_hash)
         app_doc.set({
