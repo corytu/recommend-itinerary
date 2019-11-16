@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 google-cloud-firestore = "*"
 graphene = "*"
+jupyter = "*"
 
 [packages]
 numpy = "==1.17.0"
