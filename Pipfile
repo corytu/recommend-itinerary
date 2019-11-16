@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+google-cloud-firestore = "*"
+graphene = "*"
+
+[packages]
+numpy = "==1.17.0"
+pandas = "==0.25.0"
+gensim = "*"
+xgboost = "*"
+scikit-learn = "*"
+
+[requires]
+python_version = "3.7"
