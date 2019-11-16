@@ -8,11 +8,11 @@ import numpy as np
 from gensim.models.word2vec import Word2Vec
 
 # Load data and models
-df = pd.read_json("preprocessed_data.json")
-wv_model = Word2Vec.load("word2vec.model")
-with open("xgboost.pickle", "rb") as f:
+df = pd.read_json("article_classification/preprocessed_data.json")
+wv_model = Word2Vec.load("article_classification/word2vec.model")
+with open("article_classification/xgboost.pickle", "rb") as f:
     xgbc = pickle.load(f)
-with open("rf.pickle", "rb") as f:
+with open("article_classification/rf.pickle", "rb") as f:
     rfc = pickle.load(f)
 
 def sample_data(random_state=None):
