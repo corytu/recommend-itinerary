@@ -18,10 +18,6 @@ with open("xgboost.pickle", "rb") as f:
 with open("rf.pickle", "rb") as f:
     rfc = pickle.load(f)
 
-# Filter out those which don't really have locations
-# Should be dealt in get_materials though
-df = df.loc[df["entity_address"] != {'address': []}]
-
 def predict_with_xgboost_and_rf(data):
     labels = sorted(["人文藝術", "其它", "娛樂購物", "自然景觀"])
     probs_xgbc = xgbc.predict_proba(data[[c for c in data.columns if c != "url"]])
