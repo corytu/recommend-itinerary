@@ -19,7 +19,8 @@ def sample_data(random_state=None):
     # Randomly pick one article
     df_sample = df.loc[df["self_defined_category"].isna()].sample(n=1, random_state=random_state)
     print("Sample data:")
-    print(df_sample)
+    print(f"URL: {df_sample['url'].iloc[0]}")
+    print(f"Title: {df_sample['title'].iloc[0]}")
     word_vectors = []
     tf_idfs = []
     words = []
@@ -38,8 +39,7 @@ def sample_data(random_state=None):
     df_tf_idf = pd.DataFrame(tf_idfs).rename(columns={0: "tf_idf"})
     df_word = pd.DataFrame(words).rename(columns={0: "word"})
     data = pd.concat([df_word_vectors, df_tf_idf, df_word], axis=1)
-    print("")
-    print("Data for prediction:")
+    print("\nData for prediction:")
     print(data)
     return data
 
@@ -48,21 +48,18 @@ def predict_with_xgboost_and_rf(data):
     probs_xgbc = xgbc.predict_proba(data[[c for c in data.columns if c != "word"]])
     probs_rfc = rfc.predict_proba(data[[c for c in data.columns if c != "word"]])
     xgbc_list = [{label: p for label, p in zip(labels, prob)} for prob in probs_xgbc]
-    print("With XGBoost:")
+    print("\nWith XGBoost:")
     for w, ps in zip(data["word"], xgbc_list):
         print(w, ps)
     rfc_list = [{label: p for label, p in zip(labels, prob)} for prob in probs_rfc]
-    print("")
-    print("With random forest:")
+    print("\nWith random forest:")
     for w, ps in zip(data["word"], rfc_list):
         print(w, ps)
     final_list = xgbc_list
     final_list.extend(rfc_list)
-    print("")
-    print("Averaged probabilities:")
+    print("\nAveraged probabilities:")
     print(pd.DataFrame(final_list).mean())
-    print("")
-    print("Predicted category:")
+    print("\nPredicted category:")
     print(pd.DataFrame(final_list).mean().idxmax())
 
 if __name__ == "__main__":
