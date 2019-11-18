@@ -30,7 +30,7 @@ def get_materials():
     }
     df = pd.DataFrame.from_dict(final_title_locations, orient="index").reset_index().rename(columns={"index": "url"})
     df["sentences"] = [[keyword["word"] for keyword in keywords] for keywords in df["keyword_top10"]]
-    df.to_csv("classification_articles.csv", index=False)
+    df.to_csv("articles_to_be_classified.csv", index=False)
 
 if __name__ == "__main__":
     get_materials()
