@@ -9,7 +9,7 @@ graphene = "*"
 jupyter = "*"
 
 [packages]
-numpy = "==1.17.0"
+numpy = "==1.21.0"
 pandas = "==0.25.0"
 gensim = "*"
 xgboost = "*"
